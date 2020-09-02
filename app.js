@@ -10,7 +10,6 @@ require('./config/passport')(passport)
 
 // Database Connection
 // 'mongodb://localhost:27017/grocessory'
-// mongodb+srv://find-my-pet:findmypet123@cluster0-sspip.mongodb.net/grocessory?retryWrites=true&w=majority
 mongoose.connect('mongodb://localhost:27017/shopping', { useUnifiedTopology: true, useNewUrlParser: true }, () => {
     console.log('DB connected!!!')
 })
@@ -30,7 +29,7 @@ app.use('/uploads', express.static('./uploads'))
 // Express session
 app.use(
     session({
-        secret: 'mygrocessoryapp',
+        secret: process.env.SECRET,
         resave: true,
         saveUninitialized: true
     })
