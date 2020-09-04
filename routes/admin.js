@@ -39,7 +39,7 @@ const upload = multer({
 
 
 //  Post an item 
-router.route('/:userid/post').post(upload.array('picture', 10), (req, res) => {
+router.route('/:userid/post').post(upload.single('picture'), (req, res) => {
 
     const posts = []
     const {name, description, category, price} = req.body
@@ -88,21 +88,10 @@ router.route('/:userid/post').post(upload.array('picture', 10), (req, res) => {
 })
 
 
-// router.route('/check/:id').get((req, res) => {
-//     const adminID = '5f4de3497e7c738d43075c3c'
-
-//     if(req.params.id !== adminID){
-//         res.send('You are not a admin')
-//     }else{
-//         res.send('You can post and delete data admin')
-//     }
-
-// })
-
-router.route('/:postID/delete').get(ensureAuthenticated, (req, res) => {
-    if (req.user.id !== '5f4de3497e7c738d43075c3c'){
-        res.send('You dont have authorization to delete')
-    }else{
+router.route('/:postID/delete').get( (req, res) => {
+    // if (req.user.id !== '5f4de3497e7c738d43075c3c'){
+    //     res.send('You dont have authorization to delete')
+    // }else{
         Post.findById(req.params.postID).then(post => {
             if(!post){
                 res.send('Invalid url!!!')
@@ -111,9 +100,22 @@ router.route('/:postID/delete').get(ensureAuthenticated, (req, res) => {
                 res.send('removed')
             }
         }).catch(err => res.send(err))
-    }
+    // }
 })
 
+
+
+router.route('/:postID/edit').post((req, res) => {
+    Post.findById(req.params.postID).then(post => {
+        post.name = req.body.name
+        post.description = req.body.description
+        post.category = req.body.category
+        post.price = req.body.price
+
+        post.save().then(newpost => res.send(newpost))
+
+    }).catch(err => res.status(500).send('Server Error'))
+})
 
 
 module.exports = router

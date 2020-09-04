@@ -2,22 +2,25 @@ const express = require('express')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const session = require('express-session')
 require('dotenv').config()
-
 
 require('./config/passport')(passport)
 
 // Database Connection
 // 'mongodb://localhost:27017/grocessory'
-mongoose.connect('mongodb://localhost:27017/shopping', { useUnifiedTopology: true, useNewUrlParser: true }, () => {
+// mongodb+srv://find-my-pet:findmypet123@cluster0-sspip.mongodb.net/grocessory?retryWrites=true&w=majority
+mongoose.connect('mongodb+srv://gocool:gocool@cluster0.3ujkq.mongodb.net/shopping?retryWrites=true&w=majority', { useUnifiedTopology: true, useNewUrlParser: true }, () => {
     console.log('DB connected!!!')
 })
 
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5050
 
+
+app.use(cors())
 
 // body parser 
 app.use(bodyParser.json())
@@ -29,7 +32,7 @@ app.use('/uploads', express.static('./uploads'))
 // Express session
 app.use(
     session({
-        secret: process.env.SECRET,
+        secret: 'mygrocessoryapp',
         resave: true,
         saveUninitialized: true
     })
@@ -44,6 +47,7 @@ app.use(passport.session())
 app.use('/user', require('./routes/users'))
 app.use('/post', require('./routes/posts'))
 app.use('/admin', require('./routes/admin'))
+
 
 app.get('/', (req, res) => {
     res.send('Server Working!!!')

@@ -45,7 +45,7 @@ router.route('/').get((req, res) => {
  // List of all category
 router.route('/category').get((req, res) => {
     const name = []
-   Category.find().select('_id name').then(data => {
+   Category.find().then(data => {
         // for(var i = 0; i < data.length; i++){
         //     name.push(data[i].name)
         // }
@@ -96,8 +96,15 @@ router.route('/category/add').post((req, res) => {
 })
 
 
-
-
+// Add to cart
+router.route('/:postID/cart').post((req, res) => {
+    Post.findById(req.params.postID).then(post => {
+        User.findById(req.user.id).then(user => {
+            user.cart.push(post)
+            user.save().then(user => res.send(user))
+        })
+    }).catch(err => res.send(err))
+})
 
 
 module.exports = router
